@@ -36,6 +36,8 @@ cv2.createTrackbar('filter', 'app', 0, len(kernels)-1, dummy)
 cv2.createTrackbar('brightness', 'app', 50, 100, dummy)
 cv2.createTrackbar('contrast', 'app', 1, 100, dummy)
 
+count = 1
+
 # Main UI loop
 while True:
     # Read trackbar values
@@ -57,8 +59,13 @@ while True:
     if key == ord('q'):
         break
     elif key == ord('s'):
-        #TODO: save image function
-        pass
+        # Save image
+        if grayscale == 0:
+            cv2.imwrite('../output-{}.png'.format(count), color_modified)
+        elif grayscale == 1:
+            cv2.imwrite('../output-{}.png'.format(count), gray_modified)
+        count += 1
+
     # show the image:
     if grayscale == 0:
         cv2.imshow('app', color_modified)
