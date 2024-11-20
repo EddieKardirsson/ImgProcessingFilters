@@ -49,6 +49,35 @@ box_kernel = np.array([[1,1,1],
                        [1,1,1],
                        [1,1,1]], np.float32) /9.0
 
+emboss_kernel = np.array([[-2, -1, 0],
+                          [-1, 1, 1],
+                          [0, 1, 2]])
+
+edge_detection_kernel = np.array([[-1, -1, -1],
+                                  [-1, 8, -1],
+                                  [-1, -1, -1]])
+
+sobel_kernel_x = np.array([[-1, 0, 1],
+                           [-2, 0, 2],
+                           [-1, 0, 1]])
+
+sobel_kernel_y = np.array([[-1, -2, -1],
+                           [0, 0, 0],
+                           [1, 2, 1]])
+
+laplacian_kernel = np.array([[0, 1, 0],
+                             [1, -4, 1],
+                             [0, 1, 0]])
+
+painting_kernel = np.array([[-1, -1, -1],
+                           [-1, 9, -1],
+                           [-1, -1, -1]])
+
+sketch_kernel = np.array([[-2, -1, 0],
+                          [-1, 1, 1],
+                          [0, 1, 2]])
+
+# Define kernels to be used for the grayscale styles:
 sepia_kernel = np.array([[0.1655, 0.317, 0.191],
                         [0.139, 0.443, 0.4245],
                         [0.5965, 0.4945, 0.1895]])
@@ -66,12 +95,15 @@ redtone_kernel = np.array([[0.4, 0.2, 0.1],
                            [0.6, 0.3, 0.2]])
 
 
-kernels = [identity_kernel, sharpen_kernel, gaussian_kernel1, gaussian_kernel2, box_kernel]
+# Convolution kernels array
+kernels = [identity_kernel, sharpen_kernel, gaussian_kernel1, gaussian_kernel2, box_kernel,
+           emboss_kernel, edge_detection_kernel, sobel_kernel_x, sobel_kernel_y, laplacian_kernel,
+           painting_kernel, sketch_kernel]
 
 
 def create_window():
     global application_name
-    application_name = 'app'
+    application_name = 'Simple Image Processor'
     cv2.namedWindow(application_name, cv2.WINDOW_AUTOSIZE)
 
 
@@ -99,7 +131,7 @@ def create_sliders():
     cv2.createTrackbar('grayscale', application_name, 0, 5, dummy)
     cv2.createTrackbar('filter', application_name, 0, len(kernels) - 1, dummy)
     cv2.createTrackbar('brightness', application_name, 50, 100, dummy)
-    cv2.createTrackbar('contrast', application_name, 1, 100, dummy)
+    cv2.createTrackbar('contrast', application_name, 50, 100, dummy)
 
 create_sliders()
 
@@ -109,7 +141,7 @@ while True:
     grayscale = cv2.getTrackbarPos('grayscale', application_name)
     kernel_idx = cv2.getTrackbarPos('filter', application_name)
     brightness = cv2.getTrackbarPos('brightness', application_name)
-    contrast = cv2.getTrackbarPos('contrast', application_name)
+    contrast = cv2.getTrackbarPos('contrast', application_name) * 0.02
 
     # Filters
     color_modified = cv2.filter2D(color_original, -1, kernels[kernel_idx])
